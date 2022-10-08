@@ -218,7 +218,7 @@ export default function Record({ video }) {
             screen
             render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
               <div>
-                {status === 'idle' && (
+                {status === 'recording' && (
                   <button
                     className="bg-[#55C2D9] py-2 px-4 text-lg font-medium text-white rounded-lg"
                     onClick={startRecording}
@@ -226,10 +226,17 @@ export default function Record({ video }) {
                     Start Recording
                   </button>
                 )}
-                {status === 'recording' && (
-                  <button className="bg-[#d61f2c] py-2 px-4 text-white rounded-lg" onClick={stopRecording}>
-                    Stop Recording
-                  </button>
+                {status === 'idle' && (
+                  <div className="flex items-center">
+                    <div className="flex items-center justify-center w-[24px] h-[24px] rounded-[50%] mr-2"
+                      style={{border: "2px solid #d61f2c"}}
+                    >
+                      <div className="bg-[#d61f2c] w-[18px] h-[18px] rounded-[50%]"></div>
+                    </div>
+                    <button className="bg-[#d61f2c] py-2 px-4 text-white rounded-lg" onClick={stopRecording}>
+                      Stop Recording
+                    </button>
+                  </div>
                 )}
                 {status === 'stopped' && (
                   <button
