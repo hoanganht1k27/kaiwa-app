@@ -3,12 +3,12 @@ import {
   PlayCircleOutlined,
   PauseCircleOutlined,
   PlusCircleOutlined,
-  CaretRightOutlined,
-  PauseOutlined,
+  VerticalAlignBottomOutlined,
 } from '@ant-design/icons';
 import { Button, Input } from 'antd';
-import { firestore } from '~/firebase/config';
+import firestore from '~/firebase/config';
 import { ReactMediaRecorder, useReactMediaRecorder } from 'react-media-recorder';
+import uploadFile from '~/hooks/uploadFile';
 
 const servers = {
   iceServers: [
@@ -144,6 +144,17 @@ export default function Record() {
     window.location.reload();
   };
 
+  const handleDownload = async (mediaBlobUrl) => {
+    const blob = await fetch(mediaBlobUrl).then((r) => r.blob());
+    if (blob) {
+      const file = new File([blob], 'asdfasdfasdf', { type: 'audio/wav' });
+      if (file) {
+        const path = await uploadFile(file);
+        console.log(path);
+      }
+    }
+  };
+
   return (
     <>
       <div>
@@ -170,6 +181,7 @@ export default function Record() {
               <p>{status}</p>
               <button onClick={startRecording}>Start Recording</button>
               <button onClick={stopRecording}>Stop Recording</button>
+              <Button icon={<VerticalAlignBottomOutlined />} onClick={() => handleDownload(mediaBlobUrl)} />
               {status === 'stopped' && <video src={mediaBlobUrl} controls autoPlay loop />}
             </div>
           )}
