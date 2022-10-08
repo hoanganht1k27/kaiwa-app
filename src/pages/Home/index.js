@@ -1,21 +1,45 @@
-import React, { useEffect } from 'react';
-import axiosClient from '~/axiosClient';
-
+import React, { useEffect, useState, useContext } from 'react';
+import { Spin } from 'antd';
+import GlobalContext from '~/context/GolbalContext';
+import style from '~/asset/css/home.module.css'
+import Video from './Video';
+import Record from './Record';
+import Sort from './Sort';
 export default function Home() {
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await axiosClient.get('/addresses');
-      console.log(res);
-    };
+  const [loadingVideo, setLoadingVideo] = useState( true);
+  const [loadingRecord, setLoadingRecord] = useState( true);
 
-    return () => {
-      fetchData();
-    };
+  const [videos, setVideos] = useState([]);
+  const [records, setRecords] = useState([]);
+  const { getData } = useContext(GlobalContext);
+  const onSearch = (value) => console.log(value);
+  useEffect(() => {
+    getData('/videos')
+      .then(function (res) {
+        setVideos(res);
+        setLoadingVideo( false);
+      });
+    getData('/records')
+      .then(function (res) {
+        setRecords(res);
+        setLoadingRecord( false);
+      })
   }, []);
 
   return (
-    <>
-      <h1>Home Page</h1>
-    </>
+    <div>
+      <div>
+        <h1 className={style.title}>Video</h1>
+        <Sort onSearch={onSearch}></Sort>
+        {/* <Video videos={videos} /> */}
+        { loadingVideo ? <Spin/> : <Video videos={videos}/> }
+      </div>
+      <div>
+        <h1 className={style.title}>Record</h1>
+        <Sort onSearch={onSearch}></Sort>
+        {loadingRecord ? <Spin /> : <Record records={records}/>}
+        {/* <Record records={records}></Record> */}
+      </div>
+    </div>
   );
 }
