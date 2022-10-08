@@ -1,5 +1,5 @@
 import {memo} from 'react';
-import style from '~/asset/css/record.module.css';
+import style from '~/assets/css/record.module.css';
 function Record({records}){
     console.log( records);
     return <div className={style.container}>

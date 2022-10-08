@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import style from "~/asset/css/default.module.css"
-import logo from '~/asset/image/image1.svg';
+import style from "~/assets/css/default.module.css"
+import logo from '~/assets/images/image1.svg';
 export default function DefaultLayout({ children }) {
   return (
     <div>

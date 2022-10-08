@@ -2,7 +2,7 @@ import { memo } from "react";
 import { DownOutlined } from '@ant-design/icons';
 
 import { Dropdown, Menu, Space, Input } from 'antd';
-import style from '~/asset/css/home.module.css'
+import style from '~/assets/css/home.module.css'
 import { menu, menuTopic } from './Menu';
 const { Search } = Input;
 

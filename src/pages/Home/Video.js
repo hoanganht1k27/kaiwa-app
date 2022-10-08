@@ -1,5 +1,5 @@
 import {memo} from 'react';
-import style from '~/asset/css/video.module.css';
+import style from '~/assets/css/video.module.css';
 
 function Video({videos}){
     console.log( videos);
