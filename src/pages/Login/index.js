@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useNavigate  } from 'react-router-dom';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message  } from 'antd';
 import { MailOutlined, UnlockOutlined } from '@ant-design/icons';
 import welcome from '~/assets/images/welcome.svg';
 
@@ -14,6 +14,7 @@ const Login = () => {
         localStorage.setItem('token',res.data.token)
         localStorage.setItem('user_id', res.data.user_id)
         localStorage.setItem('email', res.data.email)
+        message.success("Login successfully")
         navigate('/')
       }
     })
@@ -41,7 +42,7 @@ const Login = () => {
                   },
                 ]}
               >
-                <Input className="rounded-3xl pl-3" size="large" placeholder="Email" prefix={<MailOutlined />} />
+                <Input className="rounded-3xl pl-3 text-base" size="large" placeholder="Email" prefix={<MailOutlined />} />
               </Form.Item>
               <Form.Item
                 className="mt-8"
@@ -53,7 +54,7 @@ const Login = () => {
                   },
                 ]}
               >
-                <Input className="rounded-3xl pl-3" type="password" size="large" placeholder="Password" prefix={<UnlockOutlined />} />
+                <Input className="rounded-3xl pl-3 text-base" type="password" size="large" placeholder="Password" prefix={<UnlockOutlined />} />
               </Form.Item>
               <Form.Item className="mt-8">
                 <Button className="bg-[#63A4FF] w-full h-[40px] text-white rounded-3xl 

@@ -2,8 +2,8 @@ import React from 'react';
 
 export default function DefaultLayout({ children }) {
   return (
-    <div>
-      <h1>DefaultLayout</h1>
+    <div >
+      <div className="h-[60px]">DefaultLayout</div>
       {children}
     </div>
   );
