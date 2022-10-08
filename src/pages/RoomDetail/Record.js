@@ -1,7 +1,14 @@
-import React, { useRef, useState } from 'react';
-import { PlayCircleOutlined, PauseCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  PlayCircleOutlined,
+  PauseCircleOutlined,
+  PlusCircleOutlined,
+  CaretRightOutlined,
+  PauseOutlined,
+} from '@ant-design/icons';
 import { Button, Input } from 'antd';
 import { firestore } from '~/firebase/config';
+import { ReactMediaRecorder, useReactMediaRecorder } from 'react-media-recorder';
 
 const servers = {
   iceServers: [
@@ -138,21 +145,36 @@ export default function Record() {
   };
 
   return (
-    <div>
-      <Button icon={<PlayCircleOutlined />} onClick={handleStartCall} />
-      <Button icon={<PauseCircleOutlined />} onClick={handleStopCall} />
-      <Input placeholder="room id" onChange={(e) => setCallId(e.target.value)} />
-      <Button type="submit" icon={<PlusCircleOutlined />} onClick={(e) => handleJoin(e)} />
-      <div className="flex flex-row">
-        <div className="basis-1/2">
-          <h1>Me</h1>
-          <video autoPlay playsInline ref={localVideo} />
-        </div>
-        <div className="basis-1/2">
-          <h1>Orther user</h1>
-          <video autoPlay playsInline ref={remoteVideo} />
+    <>
+      <div>
+        <Button icon={<PlayCircleOutlined />} onClick={handleStartCall} />
+        <Button icon={<PauseCircleOutlined />} onClick={handleStopCall} />
+        <Input placeholder="room id" onChange={(e) => setCallId(e.target.value)} />
+        <Button type="submit" icon={<PlusCircleOutlined />} onClick={(e) => handleJoin(e)} />
+        <div className="flex flex-row">
+          <div className="basis-1/2">
+            <h1>Me</h1>
+            <video autoPlay playsInline ref={localVideo} />
+          </div>
+          <div className="basis-1/2">
+            <h1>Orther user</h1>
+            <video autoPlay playsInline ref={remoteVideo} />
+          </div>
         </div>
       </div>
-    </div>
+      <div>
+        <ReactMediaRecorder
+          screen
+          render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
+            <div>
+              <p>{status}</p>
+              <button onClick={startRecording}>Start Recording</button>
+              <button onClick={stopRecording}>Stop Recording</button>
+              {status === 'stopped' && <video src={mediaBlobUrl} controls autoPlay loop />}
+            </div>
+          )}
+        />
+      </div>
+    </>
   );
 }
