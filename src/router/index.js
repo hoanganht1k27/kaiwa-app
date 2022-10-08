@@ -33,11 +33,8 @@ const publicRoutes = [
   { path: '/room-chat/:roomId', component: RoomDetail, layout: DefaultLayout },
   { path: '/room-chat', component: RoomDetail, layout: DefaultLayout },
   { path: '/video-detail/:videoId', component: ViewDetail, layout: DefaultLayout },
-<<<<<<< HEAD
   
-=======
   { path: '/ranking', component: Ranking, layout: DefaultLayout}
->>>>>>> d91bd8bfea91d43b7c085ee8b89504a6338d5575
 ];
 
 const privateRoutes = [];
