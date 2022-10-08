@@ -12,7 +12,7 @@ const UploadVideo = () => {
     setImage(info.file.originFileObj)
     // const ImageData = new FormData();
     // ImageData.append('file',info.file.originFileObj)
-    // ImageData.append('upload_preset', 'nksz0y7k')
+    // ImageData.append('upload_preset', 'kaiwa-app')
     // const data = await fetch('https://api.cloudinary.com/v1_1/dauzcw4k5/image/upload',{
     //   method: 'POST',
     //   body: ImageData
@@ -21,13 +21,21 @@ const UploadVideo = () => {
   const handleChangeVideo = (info) => {
     setVideo(info.file.originFileObj)
   }
-
+  
+  const submitForm = (values) => {
+    const data = values
+    data.user_id = localStorage.getItem('user_id')
+    data.url = video
+    data.thumbnail_url = image
+    console.log(data)
+  }
   return(
     <div className="w-screen pt-[50px] px-[300px] " style={{ height: "calc(100vh - 60px)"}}>
         <div className=" text-center text-3xl text-[#272243] font font-semibold">Upload Video</div>
         <div className="mt-5">
           <Form
             name="basic"
+            onFinish={submitForm}
           >
             <div className="grid grid-cols-12 gap-y-4">
               <div className="col-span-2 text-base font-medium text-right pr-10">Thumbnail: </div>
@@ -60,7 +68,7 @@ const UploadVideo = () => {
               </div>
               <div className="col-span-2 text-base font-medium text-right pr-10">Level :</div>
               <div className="col-span-4">
-                <Form.Item name="topic">
+                <Form.Item name="level">
                   <Select>
                     <Option value="N1">N1</Option>
                     <Option value="N2">N2</Option>
@@ -70,9 +78,9 @@ const UploadVideo = () => {
                   </Select>
                 </Form.Item>
               </div>
-              <div className="col-span-2 text-base font-medium text-right pr-10">Level :</div>
+              <div className="col-span-2 text-base font-medium text-right pr-10">Description :</div>
               <div className="col-span-10">
-                <Form.Item name="topic">
+                <Form.Item name="desc">
                   <TextArea rows={4}/>
                 </Form.Item>
               </div>
