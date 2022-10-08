@@ -8,6 +8,7 @@ import RecordDetail from '~/pages/RecordDetail';
 import UploadVideo from '~/pages/UploadVideo.js';
 import RoomDetail from '~/pages/RoomDetail';
 import ViewDetail from '~/pages/VideoDetail';
+import Ranking from '~/pages/Ranking';
 // Provider
 
 // Public Page
@@ -33,6 +34,7 @@ const publicRoutes = [
   { path: '/room-chat', component: RoomDetail, layout: DefaultLayout },
   { path: '/video-detail/:videoId', component: ViewDetail, layout: DefaultLayout },
   
+  { path: '/ranking', component: Ranking, layout: DefaultLayout}
 ];
 
 const privateRoutes = [];
