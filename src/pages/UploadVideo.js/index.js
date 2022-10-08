@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { UploadOutlined } from '@ant-design/icons';
 import { Upload, Button } from 'antd'
-import { Form, Input, Select } from "antd";
+import { Form, Input, Select, message } from "antd";
+import uploadFile from "~/hooks/uploadFile";
+import axios from "axios";
+
 const UploadVideo = () => {
+  const navigate = useNavigate();
   const { Option } = Select
   const { TextArea } = Input
   const [image, setImage] = useState()
@@ -10,25 +15,26 @@ const UploadVideo = () => {
 
   const handleChangeImage = async (info) => {
     setImage(info.file.originFileObj)
-    // const ImageData = new FormData();
-    // ImageData.append('file',info.file.originFileObj)
-    // ImageData.append('upload_preset', 'kaiwa-app')
-    // const data = await fetch('https://api.cloudinary.com/v1_1/dauzcw4k5/image/upload',{
-    //   method: 'POST',
-    //   body: ImageData
-    // }).then(res => res.json())
   }
   const handleChangeVideo = (info) => {
     setVideo(info.file.originFileObj)
   }
   
-  const submitForm = (values) => {
+  const submitForm = async (values) => {
+    const videoPath = await uploadFile(video)
+    const thumbnailPath = await uploadFile(image)
     const data = values
-    data.user_id = localStorage.getItem('user_id')
-    data.url = video
-    data.thumbnail_url = image
-    console.log(data)
+    data.created_by_id = localStorage.getItem('user_id')
+    data.url = videoPath
+    data.thumbnail_url = thumbnailPath
+    axios.post('/video/add',data).then(res => {
+      if(res.status === 200){
+        message.success("Video added successfully")
+        navigate('/')
+      }
+    })
   }
+  
   return(
     <div className="w-screen pt-[50px] px-[300px] " style={{ height: "calc(100vh - 60px)"}}>
         <div className=" text-center text-3xl text-[#272243] font font-semibold">Upload Video</div>
@@ -72,9 +78,9 @@ const UploadVideo = () => {
                   <Select>
                     <Option value="N1">N1</Option>
                     <Option value="N2">N2</Option>
-                    <Option value="N2">N3</Option>
-                    <Option value="N2">N4</Option>
-                    <Option value="N2">N5</Option>
+                    <Option value="N3">N3</Option>
+                    <Option value="N4">N4</Option>
+                    <Option value="N5">N5</Option>
                   </Select>
                 </Form.Item>
               </div>
