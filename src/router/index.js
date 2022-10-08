@@ -5,6 +5,7 @@ import { Fragment } from 'react';
 import Home from '~/pages/Home';
 import Login from '~/pages/Login';
 import RecordDetail from '~/pages/RecordDetail';
+import UploadVideo from '~/pages/UploadVideo.js';
 import RoomDetail from '~/pages/RoomDetail';
 
 // Provider
@@ -22,9 +23,13 @@ const publicRoutes = [
     layout: Fragment,
   },
   {
-    path: '/record-detail/:recordId',
-    component: RecordDetail,
-    layout: Fragment,
+    path: '/record-detail/:recordId', component: RecordDetail, layout: Fragment
+  },
+  {
+    path: '/upload-video', component: UploadVideo, layout: DefaultLayout
+  },
+  {
+    path: '/record-detail/:recordId', component: RecordDetail, layout: Fragment,
   },
   { path: '/', component: Home, layout: DefaultLayout },
   { path: '/room-chat', component: RoomDetail, layout: DefaultLayout },

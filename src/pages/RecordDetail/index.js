@@ -56,7 +56,7 @@ const RecordDetail = () => {
               </div>
               <div className=" flex justify-center mt-3">
                 <Button className="w-3/5 h-[40px] bg-[#ffd803] text-[#272343] hover:bg-[#ffd803] 
-                hover:opacity-90 hover:text-[#272343]" onClick={handleSubmit}>
+                hover:opacity-80 hover:text-[#272343]" onClick={handleSubmit}>
                   Send Feedback
                 </Button>
               </div>
