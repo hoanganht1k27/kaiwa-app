@@ -11,11 +11,14 @@ const Login = () => {
   const handleSubmit = async(values) => {
     axios.post('/user/login', values).then(res => {
       if(res.status === 200){
+        console.log( res.data);
         localStorage.setItem('token',res.data.token)
         localStorage.setItem('user_id', res.data.user_id)
-        localStorage.setItem('email', res.data.email)
-        message.success("Login successfully")
-        navigate('/')
+        localStorage.setItem('email', res.data.email);
+        localStorage.setItem('isTeacher', res.data.isTeacher );
+        message.success("Login successfully");
+        navigate('/');
+
       }
     })
   }
