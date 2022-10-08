@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import firebase from 'firebase/compat/app';
 import { getAnalytics } from 'firebase/analytics';
+import { getStorage } from 'firebase/storage';
 import 'firebase/compat/analytics'; //them compat cho version 9
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -25,4 +26,4 @@ firebase.analytics();
 export default firebase;
 export const analytics = getAnalytics(app);
 export const db = firebase.firestore();
-export const firestore = firebase.firestore();
+export const storage = getStorage(app);
