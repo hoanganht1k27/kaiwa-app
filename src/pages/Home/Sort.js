@@ -53,7 +53,7 @@ function Sort({onSearch, setAll, setLevel, setTopic}) {
         </div>
         <Search
             placeholder="input search text"
-            onSearch={onSearch}
+            onSearch={ onSearch}
             style={{
                 width: 400,
                 marginRight: 100,

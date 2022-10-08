@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Spin, Button } from 'antd';
+import { Spin} from 'antd';
 // import GlobalContext from '~/context/GolbalContext';
 import style from '~/assets/css/home.module.css'
 import Video from './Video';
@@ -52,10 +52,30 @@ export default function Home() {
 
 
   const onSearchRecord = (value) =>{
-    console.log(value);
+    var text = value.toLowerCase();
+    var records = originRecord.filter( ( record, index) =>{
+      var name = record.name.toLowerCase();
+      let position = name.search( text);
+      if( position === -1) return false;
+      return true;
+    });
+    
+    
+    setRecords( records);
+
+    // console.log(value);
   }
   const onSearchVideo = (value) =>{
-    console.log(value);
+    var text = value.toLowerCase();
+    var videos = originVideo.filter( ( video, index) =>{
+      var name = video.name.toLowerCase();
+      let position = name.search( text);
+      if( position === -1) return false;
+      return true;
+    });
+    
+    
+    setVideos( videos);
   } 
   useEffect(() => {
     var user_id = localStorage.getItem('user_id');
@@ -85,7 +105,7 @@ export default function Home() {
     <div>
       <div>
         <h1 className={style.title}>Video</h1>
-        <Sort onSearch={onSearchVideo} setAll={setAllVideo} setLevel={setLevelVideo} setTopic={setTopicVideo}></Sort>
+        <Sort onSearch={onSearchVideo} setAll={setAllVideo} setLevel={setLevelVideo} setTopic={setTopicVideo} ></Sort>
         {/* <Video videos={videos} /> */}
         {loadingVideo ? <Spin /> : <Video videos={videos} />}
       </div>

@@ -1,11 +1,15 @@
 import {memo} from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import style from '~/assets/css/record.module.css';
 function Record({records}){
+    const navigate = useNavigate();
+
     // console.log( records);
     return <div className={style.container}>
         {
             records.map((record, index) => {
-                return <div key={index} className={style.video}>
+                return <div key={index} className={style.video} onClick={ ()=>{ navigate(`/record-detail/${record._id}`) }}>
                     <img alt='text' className={style.image} src={record.url} />
                     <div className='px-3'>
                         <div className={`${style.description1} ${style.border}`}>

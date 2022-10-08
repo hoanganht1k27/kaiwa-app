@@ -1,7 +1,7 @@
 import {Menu, message} from 'antd';
 function Topic({setTopic}){
     const onClick = ({ key, label }) => {
-        message.info(`Click on item ${key}`);
+        message.info(`Sort ${key}`);
         // console.log( label);
         setTopic(key);
     };
