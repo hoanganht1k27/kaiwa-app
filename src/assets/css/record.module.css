@@ -3,6 +3,11 @@
     height: 324px;
     margin: 40px;
     /* background-color: blue; */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.video:hover{
+    cursor: pointer;
+    box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 .image{
@@ -17,19 +22,52 @@
 }
 .description1{
     display: flex;
+    padding: 4px 0;
     
+    /* padding: 6px 0; */
 }
 .level{
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 400;
     line-height: 29px;
     width: 50%;
-    text-align: center;
+    text-align: left;
+    /* padding-left: 20px; */
 }
 .view{
     font-size: 16px;
     font-weight: 400;
     width: 50%;
     line-height: 29px;
-    text-align: center;
+    text-align: right;
+    /* padding-right: 20px; */
+}
+.topic{
+    font-size: 16px;
+    width: 50%;
+    /* text-align: center; */
+    padding-left: 40px;
+
+}
+.line{
+    height: 2px;
+    width: 90%;
+    margin: auto;
+    background-color: rgb(166, 176, 176);
+}
+
+.border{
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    padding: 6px 0px;
+
+}
+
+.topic2{
+    /* padding-left: 60px; */
+    padding-right: 40px;
+    text-align: right;
+}
+
+.iconWatching{
+    padding-right: 6px;
 }
