@@ -1,9 +1,10 @@
-import { dataBase } from './config';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
+import { db } from './config';
+import firebase from './config';
 
 export const addDocument = async (collectionName, data) => {
-  await addDoc(collection(dataBase, collectionName), {
+  await db.collection(collectionName).add({
     ...data,
-    createdAt: Timestamp.now(),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
   });
 };

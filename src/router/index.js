@@ -32,6 +32,7 @@ const publicRoutes = [
     path: '/record-detail/:recordId', component: RecordDetail, layout: Fragment,
   },
   { path: '/', component: Home, layout: DefaultLayout },
+  { path: '/room-chat/:roomId', component: RoomDetail, layout: DefaultLayout },
   { path: '/room-chat', component: RoomDetail, layout: DefaultLayout },
   { path: '/video-detail/:videoId', component: ViewDetail, layout: DefaultLayout },
 ];
