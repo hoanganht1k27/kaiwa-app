@@ -29,6 +29,7 @@ export default function Record({ video }) {
   const [userData, setUserData] = useState(null);
 
   const [callId, setCallId] = useState(null);
+  const [data, setData] = useState(null);
 
   const handleDownload = async (mediaBlobUrl) => {
     const blob = await fetch(mediaBlobUrl).then((r) => r.blob());
@@ -36,18 +37,20 @@ export default function Record({ video }) {
       const file = new File([blob], 'asdfasdfasdf', { type: 'audio/wav' });
       if (file) {
         const path = await uploadFile(file);
-        axios.post('/record/add', {
-          url: path,
-          name: video.name,
-          video_id: video.video_id,
-          level: video.level,
-          topic: video.topic,
-          teacher_id: video.created_by_id,
-          student_a_id: userData.offerUid,
-          student_b_id: userData.answerUid,
-        }).then(res => {
-          console.log(res)
-        });
+        axios
+          .post('/record/add', {
+            url: path,
+            name: video.name,
+            video_id: video.video_id,
+            level: video.level,
+            topic: video.topic,
+            teacher_id: video.created_by_id,
+            student_a_id: userData.offerUid,
+            student_b_id: userData.answerUid,
+          })
+          .then((res) => {
+            console.log(res);
+          });
 
         // addDocument('notifications', {
         //   userId: currentUserId,

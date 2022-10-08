@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { publicRoutes, privateRoutes } from './router';
 import RequireAuth from './components/RequireAuth';
 import axios from 'axios';
+import 'tippy.js/dist/tippy.css';
 
 axios.defaults.baseURL = 'http://192.168.2.172:8000';
 axios.defaults.headers.post['Accept'] = 'application/json';
