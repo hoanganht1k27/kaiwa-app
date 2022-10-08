@@ -6,16 +6,20 @@ import ChatMessage from './ChatMessage';
 import { addDocument } from '~/firebase/servieces';
 import useFirestore from '~/hooks/useFirestore';
 import Record from './Record';
+import { useParams } from 'react-router-dom';
 
 export default function RoomDetail() {
+  const { roomId } = useParams();
   const messageRef = useRef();
   const [sendMessage, setSendMessage] = useState(null);
+  const currentUserId = localStorage.getItem('user_id');
 
   const handleOnSubmit = () => {
     try {
       if (sendMessage) {
         addDocument('messages', {
-          uid: 1,
+          roomId: roomId,
+          sender: currentUserId,
           content: sendMessage,
         });
         setSendMessage(null);
@@ -24,8 +28,6 @@ export default function RoomDetail() {
       console.log('Toang meo chay r loi cc: ', error);
     }
   };
-
-  const condition = useMemo(() => {});
 
   const messages = useFirestore('messages');
 
@@ -36,6 +38,7 @@ export default function RoomDetail() {
 
   return (
     <div className="px-8">
+      {console.log(messages)}
       <div className="flex flex-row gap-4 max-h-[80vh]">
         <div className="basis-3/4 bg-[#272343] h-full">
           <img className="h-full object-cover" src={images.demoThumbnail} alt="Thumbnail" />
@@ -50,7 +53,15 @@ export default function RoomDetail() {
             ) : (
               <>
                 {messages.map((message) => (
-                  <ChatMessage key={message.id} message={message.content} />
+                  <>
+                    {message.roomId == roomId && (
+                      <ChatMessage
+                        key={message.id}
+                        sender={message.sender === currentUserId}
+                        message={message.content}
+                      />
+                    )}
+                  </>
                 ))}
               </>
             )}
