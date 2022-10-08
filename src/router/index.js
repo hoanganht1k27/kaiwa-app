@@ -6,14 +6,21 @@ import Home from '~/pages/Home';
 import Login from '~/pages/Login';
 import RecordDetail from '~/pages/RecordDetail';
 import UploadVideo from '~/pages/UploadVideo.js';
+import RoomDetail from '~/pages/RoomDetail';
+
 // Provider
 
 // Public Page
 const publicRoutes = [
-  { 
-    path: '/', component: Home, layout: DefaultLayout },
   {
-    path: '/login', component: Login, layout: Fragment
+    path: '/',
+    component: Home,
+    layout: DefaultLayout,
+  },
+  {
+    path: '/login',
+    component: Login,
+    layout: Fragment,
   },
   {
     path: '/record-detail/:recordId', component: RecordDetail, layout: Fragment
@@ -21,6 +28,12 @@ const publicRoutes = [
   {
     path: '/upload-video', component: UploadVideo, layout: DefaultLayout
   }
+    path: '/record-detail/:recordId',
+    component: RecordDetail,
+    layout: Fragment,
+  },
+  { path: '/', component: Home, layout: DefaultLayout },
+  { path: '/room-chat', component: RoomDetail, layout: DefaultLayout },
 ];
 
 const privateRoutes = [];
