@@ -34,7 +34,7 @@ export default function DefaultLayout({ children }) {
           <NavLink className={style.link} to="/">Home</NavLink>
           <NavLink className={style.link} to="/">Video</NavLink>
           <NavLink className={style.link} to="/">Record</NavLink>
-          <NavLink className={style.link} to="/">Ranking</NavLink>
+          <NavLink className={style.link} to="/ranking">Ranking</NavLink>
         </div>
         <div className={`pl-4 col-span-4 ${style.containerIcon}`}>
           <i className={`fa-solid fa-music ${style.icon}`}></i>

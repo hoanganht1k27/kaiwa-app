@@ -104,13 +104,13 @@ export default function Home() {
   return (
     <div>
       <div>
-        <h1 className={style.title}>Video</h1>
+        <h1 id="video" className={style.title}>Video</h1>
         <Sort onSearch={onSearchVideo} setAll={setAllVideo} setLevel={setLevelVideo} setTopic={setTopicVideo} ></Sort>
         {/* <Video videos={videos} /> */}
         {loadingVideo ? <Spin /> : <Video videos={videos} />}
       </div>
       <div>
-        <h1 className={style.title}>Record</h1>
+        <h1 id='record' className={style.title}>Record</h1>
         <Sort onSearch={onSearchRecord} setAll={setAllRecord} setLevel={setLevelRecord} setTopic={setTopicRecord}></Sort>
         {loadingRecord ? <Spin /> : <Record records={records} />}
         {/* <Record records={records}></Record> */}
