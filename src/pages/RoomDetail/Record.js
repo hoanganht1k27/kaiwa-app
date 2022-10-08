@@ -202,17 +202,15 @@ export default function Record({ video }) {
               ref={localVideo}
             />
           </div>
-          {remoteVideo.current?.srcObject && (
-            <div className="basis-1/2">
-              <video
-                className="w-[250px] rounded-md"
-                style={{ border: '4px solid #bae8e8' }}
-                autoPlay
-                playsInline
-                ref={remoteVideo}
-              />
-            </div>
-          )}
+          <div className="basis-1/2">
+            <video
+              className="w-[250px] rounded-md"
+              style={{ border: '4px solid #bae8e8' }}
+              autoPlay
+              playsInline
+              ref={remoteVideo}
+            />
+          </div>
         </div>
       </div>
       <div className="w-4/5 flex justify-center">
