@@ -1,18 +1,30 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import images from '~/assets/images';
+import React, {  useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { SendOutlined } from '@ant-design/icons';
-import { Input, Button } from 'antd';
+import { Input, Button, Spin } from 'antd';
 import ChatMessage from './ChatMessage';
 import { addDocument } from '~/firebase/servieces';
 import useFirestore from '~/hooks/useFirestore';
 import Record from './Record';
-import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 export default function RoomDetail() {
   const { roomId } = useParams();
-  const messageRef = useRef();
   const [sendMessage, setSendMessage] = useState(null);
   const currentUserId = localStorage.getItem('user_id');
+  const [loading, setLoading] = useState(true)
+  const [video, setVideo] = useState()
+
+  const videoId = localStorage.getItem('video_id')
+
+  useEffect(() => {
+    axios.get(`/video/detail/${videoId}`).then(res => {
+      if(res.status === 200){
+        setVideo(res.data.url)
+        setLoading(false)
+      }
+    })
+  })
 
   const handleOnSubmit = () => {
     try {
@@ -31,17 +43,23 @@ export default function RoomDetail() {
 
   const messages = useFirestore('messages');
 
-  // Auto scroll to bottom
-  useEffect(() => {
-    messageRef.current?.scrollIntoView();
-  }, [messages]);
-
+  if(loading){
+    return(
+      <div className="mt-10 flex justify-center">
+        <Spin></Spin>
+      </div>
+    )
+  }
   return (
     <div className="px-8">
-      {console.log(messages)}
       <div className="flex flex-row gap-4 max-h-[80vh]">
-        <div className="basis-3/4 bg-[#272343] h-full">
-          <img className="h-full object-cover" src={images.demoThumbnail} alt="Thumbnail" />
+        <div className="basis-3/4 flex justify-center bg-[#272343]">
+          <video className="hover:cursor-pointer" width="650" height="360" controls>
+            <source
+              src={video}
+              type="video/mp4"
+            />
+          </video>
         </div>
         <div className="basis-1/4 flex flex-col justify-between text-center bg-[#bae8e8]">
           <div className="basis-1/12 flex justify-center items-center bg-zinc-800">
@@ -54,7 +72,7 @@ export default function RoomDetail() {
               <>
                 {messages.map((message) => (
                   <>
-                    {message.roomId == roomId && (
+                    {message.roomId === roomId && (
                       <ChatMessage
                         key={message.id}
                         sender={message.sender === currentUserId}
@@ -65,7 +83,6 @@ export default function RoomDetail() {
                 ))}
               </>
             )}
-            <div ref={messageRef}></div>
           </div>
           <div className="basis-1/12 flex flex-row h-full">
             <Input
@@ -86,7 +103,7 @@ export default function RoomDetail() {
         </div>
       </div>
       <div>
-        <Record />
+        <Record video />
       </div>
     </div>
   );

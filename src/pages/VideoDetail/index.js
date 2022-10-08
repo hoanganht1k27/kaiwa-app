@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Spin } from 'antd';
 import { PlusCircleFilled } from '@ant-design/icons';
@@ -8,7 +8,6 @@ import axios from 'axios';
 import { addDocument } from '~/firebase/servieces';
 import useFirestore from '~/hooks/useFirestore';
 import { db } from '~/firebase/config';
-import { Firestore } from 'firebase/firestore';
 const ViewDetail = () => {
   let { videoId } = useParams();
   const navigate = useNavigate();
@@ -18,10 +17,10 @@ const ViewDetail = () => {
   const currentUserFullname = localStorage.getItem('fullname');
   const [docId, setDocId] = useState(null);
 
-  const openNotification = (fullname) => {
+  const openNotification = (fullname, index) => {
     const key = `open${Date.now()}`;
     const btn = (
-      <Button size="normal" onClick={() => navigate(`/room-chat/${docId}/answer`)}>
+      <Button key={index} size="normal" onClick={() => navigate(`/room-chat/${docId}/answer`)}>
         Confirm
       </Button>
     );
@@ -38,6 +37,7 @@ const ViewDetail = () => {
     axios.get(`/video/detail/${videoId}`).then((res) => {
       if (res.status === 200) {
         setVideo(res.data);
+        console.log(res)
         setLoading(false);
       }
     });
@@ -79,9 +79,9 @@ const ViewDetail = () => {
         </div>
       ) : (
         <div className="px-[80px]">
-          {rooms?.map((each) => {
-            if (each.answerUid == currentUserId) {
-              openNotification(each.answerUid);
+          {rooms?.map((each,index) => {
+            if (each.answerUid === currentUserId) {
+              openNotification(each.answerUid, index);
             }
           })}
           <div className="flex flex-row gap-4 max-h-[80vh]">
@@ -112,6 +112,7 @@ const ViewDetail = () => {
                               snapshot.docs.map((doc) => {
                                 if (doc.data().answerUid == user.uid) {
                                   setDocId(doc.id);
+                                  localStorage.setItem('video_id', videoId)
                                   navigate(`/room-chat/${doc.id}/offer`);
                                 }
                               });
