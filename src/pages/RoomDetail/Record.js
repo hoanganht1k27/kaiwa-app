@@ -205,7 +205,6 @@ export default function Record({ video }) {
           <div className="basis-1/2">
             <video
               className="w-[250px] rounded-md"
-              style={{ border: '4px solid #bae8e8' }}
               autoPlay
               playsInline
               ref={remoteVideo}
