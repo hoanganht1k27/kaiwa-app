@@ -1,0 +1,28 @@
+.nav{
+    height: 60px;
+    line-height: 60px;
+}
+.link{
+    font-size: 32px;
+    font-weight: 400;
+    
+}
+.containerLink{
+    display: flex;
+    justify-content:space-around;
+}
+.containerIcon{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+.icon{
+    line-height: 60px;
+    font-size: 32px;
+    padding: 0 20px;
+}
+
+
+.logo{
+    height: 60px;
+}
