@@ -13,7 +13,9 @@ const useFirestore = (collectionName, condition) => {
         setDocuments([]);
         return;
       }
-      collectionRef = collectionRef.where(condition.fieldName, condition.operator, condition.compareValue);
+      collectionRef = collectionRef
+        .where(condition.fieldName, condition.operator, condition.compareValue)
+        .orderBy('createdAt', 'desc');
     }
 
     const unsubscribe = collectionRef.onSnapshot((snapshot) => {
