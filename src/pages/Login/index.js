@@ -1,28 +1,28 @@
 import React from 'react';
 import axios from 'axios';
-import { useNavigate  } from 'react-router-dom';
-import { Form, Input, Button, message  } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Form, Input, Button, message } from 'antd';
 import { MailOutlined, UnlockOutlined } from '@ant-design/icons';
 import welcome from '~/assets/images/welcome.svg';
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = async(values) => {
-    axios.post('/user/login', values).then(res => {
-      if(res.status === 200){
-        console.log( res.data);
-        localStorage.setItem('token',res.data.token)
-        localStorage.setItem('user_id', res.data.user_id)
+  const handleSubmit = async (values) => {
+    axios.post('/user/login', values).then((res) => {
+      if (res.status === 200) {
+        console.log(res.data);
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('user_id', res.data.user_id);
         localStorage.setItem('email', res.data.email);
-        localStorage.setItem('isTeacher', res.data.isTeacher );
-        message.success("Login successfully");
+        localStorage.setItem('fullname', res.data.fullname);
+        localStorage.setItem('isTeacher', res.data.isTeacher);
+        message.success('Login successfully');
         navigate('/');
-
       }
-    })
-  }
-  
+    });
+  };
+
   return (
     <div
       className="w-screen h-screen bg-gradient-to-r from-[#83EAF1] to-[#63A4FF]
@@ -45,7 +45,12 @@ const Login = () => {
                   },
                 ]}
               >
-                <Input className="rounded-3xl pl-3 text-base" size="large" placeholder="Email" prefix={<MailOutlined />} />
+                <Input
+                  className="rounded-3xl pl-3 text-base"
+                  size="large"
+                  placeholder="Email"
+                  prefix={<MailOutlined />}
+                />
               </Form.Item>
               <Form.Item
                 className="mt-8"
@@ -57,11 +62,20 @@ const Login = () => {
                   },
                 ]}
               >
-                <Input className="rounded-3xl pl-3 text-base" type="password" size="large" placeholder="Password" prefix={<UnlockOutlined />} />
+                <Input
+                  className="rounded-3xl pl-3 text-base"
+                  type="password"
+                  size="large"
+                  placeholder="Password"
+                  prefix={<UnlockOutlined />}
+                />
               </Form.Item>
               <Form.Item className="mt-8">
-                <Button className="bg-[#63A4FF] w-full h-[40px] text-white rounded-3xl 
-                hover:bg-[#63A4FF] hover:text-white hover:opacity-90"  htmlType="submit">
+                <Button
+                  className="bg-[#63A4FF] w-full h-[40px] text-white rounded-3xl 
+                hover:bg-[#63A4FF] hover:text-white hover:opacity-90"
+                  htmlType="submit"
+                >
                   LOGIN
                 </Button>
               </Form.Item>

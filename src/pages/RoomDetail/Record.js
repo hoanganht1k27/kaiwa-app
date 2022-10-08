@@ -6,9 +6,12 @@ import {
   VerticalAlignBottomOutlined,
 } from '@ant-design/icons';
 import { Button, Input } from 'antd';
-import firestore from '~/firebase/config';
+import firestore, { db } from '~/firebase/config';
 import { ReactMediaRecorder, useReactMediaRecorder } from 'react-media-recorder';
 import uploadFile from '~/hooks/uploadFile';
+import { useNavigate, useParams } from 'react-router-dom';
+import { v4 } from 'uuid';
+import { addDocument } from '~/firebase/servieces';
 
 const servers = {
   iceServers: [
@@ -21,9 +24,11 @@ const servers = {
 const pc = new RTCPeerConnection(servers);
 
 export default function Record() {
+  const { roomId, type } = useParams();
+  const currentUserId = localStorage.getItem('user_id');
   const localVideo = useRef();
   const remoteVideo = useRef();
-  const [roomId, setRoomId] = useState(null);
+  const navigate = useNavigate();
 
   const [callId, setCallId] = useState(null);
 
@@ -46,11 +51,9 @@ export default function Record() {
     localVideo.current.srcObject = streamRes;
     remoteVideo.current.srcObject = remoteStream;
 
-    const callDoc = firestore.collection('calls').doc();
+    const callDoc = db.collection('calls').doc();
     const offerCandidates = callDoc.collection('offerCandidates');
     const answerCandidates = callDoc.collection('answerCandidates');
-
-    setRoomId(callDoc.id);
 
     pc.onicecandidate = (event) => {
       event.candidate && offerCandidates.add(event.candidate.toJSON());
@@ -64,7 +67,7 @@ export default function Record() {
       type: offerDescription.type,
     };
 
-    await callDoc.set({ offer });
+    await callDoc.set({ offer, roomId: roomId });
 
     callDoc.onSnapshot((snapshot) => {
       const data = snapshot.data();
@@ -106,37 +109,43 @@ export default function Record() {
     localVideo.current.srcObject = localStream;
     remoteVideo.current.srcObject = remoteStream;
 
-    const callDoc = firestore.collection('calls').doc(callId);
-    const answerCandidates = callDoc.collection('answerCandidates');
-    const offerCandidates = callDoc.collection('offerCandidates');
+    db.collection('calls')
+      .where('roomId', '==', roomId)
+      .get()
+      .then((snapshot) => {
+        snapshot.docs.forEach(async (doc) => {
+          const callDoc = db.collection('calls').doc(doc.id);
+          const answerCandidates = callDoc.collection('answerCandidates');
+          const offerCandidates = callDoc.collection('offerCandidates');
+          pc.onicecandidate = (event) => {
+            event.candidate && answerCandidates.add(event.candidate.toJSON());
+          };
 
-    pc.onicecandidate = (event) => {
-      event.candidate && answerCandidates.add(event.candidate.toJSON());
-    };
+          const callData = (await callDoc.get()).data();
 
-    const callData = (await callDoc.get()).data();
+          const offerDescription = callData.offer;
+          await pc.setRemoteDescription(new RTCSessionDescription(offerDescription));
 
-    const offerDescription = callData.offer;
-    await pc.setRemoteDescription(new RTCSessionDescription(offerDescription));
+          const answerDescription = await pc.createAnswer();
+          await pc.setLocalDescription(answerDescription);
 
-    const answerDescription = await pc.createAnswer();
-    await pc.setLocalDescription(answerDescription);
+          const answer = {
+            type: answerDescription.type,
+            sdp: answerDescription.sdp,
+          };
 
-    const answer = {
-      type: answerDescription.type,
-      sdp: answerDescription.sdp,
-    };
+          await callDoc.update({ answer });
 
-    await callDoc.update({ answer });
-
-    offerCandidates.onSnapshot((snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') {
-          let data = change.doc.data();
-          pc.addIceCandidate(new RTCIceCandidate(data));
-        }
+          offerCandidates.onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+              if (change.type === 'added') {
+                let data = change.doc.data();
+                pc.addIceCandidate(new RTCIceCandidate(data));
+              }
+            });
+          });
+        });
       });
-    });
   };
 
   const handleStopCall = async () => {
@@ -150,10 +159,135 @@ export default function Record() {
       const file = new File([blob], 'asdfasdfasdf', { type: 'audio/wav' });
       if (file) {
         const path = await uploadFile(file);
+        // addDocument('notifications', {
+        //   userId: currentUserId,
+        //   recordId: ,
+        //   type: 'user',
+        // });
+        // pc.close();
+        // navigate('/');
         console.log(path);
       }
     }
   };
+
+  useEffect(() => {
+    const hanldleStart = async () => {
+      if (type == 'offer') {
+        const streamRes = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+        // Push tracks from local stream to peer connection
+        streamRes.getTracks().forEach((track) => {
+          pc.addTrack(track, streamRes);
+        });
+
+        const remoteStream = new MediaStream();
+
+        pc.ontrack = (event) => {
+          event.streams[0].getTracks().forEach((track) => {
+            remoteStream.addTrack(track);
+          });
+        };
+
+        localVideo.current.srcObject = streamRes;
+        remoteVideo.current.srcObject = remoteStream;
+
+        const callDoc = db.collection('calls').doc();
+        const offerCandidates = callDoc.collection('offerCandidates');
+        const answerCandidates = callDoc.collection('answerCandidates');
+
+        pc.onicecandidate = (event) => {
+          event.candidate && offerCandidates.add(event.candidate.toJSON());
+        };
+
+        const offerDescription = await pc.createOffer();
+        await pc.setLocalDescription(offerDescription);
+
+        const offer = {
+          sdp: offerDescription.sdp,
+          type: offerDescription.type,
+        };
+
+        await callDoc.set({ offer, roomId: roomId });
+
+        callDoc.onSnapshot((snapshot) => {
+          const data = snapshot.data();
+          if (!pc.currentRemoteDescription && data?.answer) {
+            const answerDescription = new RTCSessionDescription(data.answer);
+            pc.setRemoteDescription(answerDescription);
+          }
+        });
+
+        answerCandidates.onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added') {
+              const candidate = new RTCIceCandidate(change.doc.data());
+              pc.addIceCandidate(candidate);
+            }
+          });
+        });
+      } else {
+        const localStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+        const remoteStream = new MediaStream();
+
+        localStream.getTracks().forEach((track) => {
+          pc.addTrack(track, localStream);
+        });
+
+        pc.ontrack = (event) => {
+          event.streams[0].getTracks().forEach((track) => {
+            remoteStream.addTrack(track);
+          });
+        };
+
+        localVideo.current.srcObject = localStream;
+        remoteVideo.current.srcObject = remoteStream;
+
+        db.collection('calls')
+          .where('roomId', '==', roomId)
+          .get()
+          .then((snapshot) => {
+            snapshot.docs.forEach(async (doc) => {
+              const callDoc = db.collection('calls').doc(doc.id);
+              const answerCandidates = callDoc.collection('answerCandidates');
+              const offerCandidates = callDoc.collection('offerCandidates');
+              pc.onicecandidate = (event) => {
+                event.candidate && answerCandidates.add(event.candidate.toJSON());
+              };
+
+              const callData = (await callDoc.get()).data();
+
+              const offerDescription = callData.offer;
+              await pc.setRemoteDescription(new RTCSessionDescription(offerDescription));
+
+              const answerDescription = await pc.createAnswer();
+              await pc.setLocalDescription(answerDescription);
+
+              const answer = {
+                type: answerDescription.type,
+                sdp: answerDescription.sdp,
+              };
+
+              await callDoc.update({ answer });
+
+              offerCandidates.onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                  if (change.type === 'added') {
+                    let data = change.doc.data();
+                    pc.addIceCandidate(new RTCIceCandidate(data));
+                  }
+                });
+              });
+            });
+          });
+      }
+    };
+
+    return hanldleStart;
+  }, []);
 
   return (
     <>
@@ -174,18 +308,20 @@ export default function Record() {
         </div>
       </div>
       <div>
-        <ReactMediaRecorder
-          screen
-          render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
-            <div>
-              <p>{status}</p>
-              <button onClick={startRecording}>Start Recording</button>
-              <button onClick={stopRecording}>Stop Recording</button>
-              <Button icon={<VerticalAlignBottomOutlined />} onClick={() => handleDownload(mediaBlobUrl)} />
-              {status === 'stopped' && <video src={mediaBlobUrl} controls autoPlay loop />}
-            </div>
-          )}
-        />
+        {type == 'offer' && (
+          <ReactMediaRecorder
+            screen
+            render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
+              <div>
+                <p>{status}</p>
+                <button onClick={startRecording}>Start Recording</button>
+                <button onClick={stopRecording}>Stop Recording</button>
+                <Button icon={<VerticalAlignBottomOutlined />} onClick={() => handleDownload(mediaBlobUrl)} />
+                {status === 'stopped' && <video src={mediaBlobUrl} controls autoPlay loop />}
+              </div>
+            )}
+          />
+        )}
       </div>
     </>
   );
