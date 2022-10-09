@@ -1,4 +1,3 @@
-import { Timestamp } from 'firebase/firestore';
 import { db } from './config';
 import firebase from './config';
 
