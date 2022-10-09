@@ -23,7 +23,7 @@ const ViewDetail = () => {
         key={index}
         size="normal"
         onClick={() => {
-          navigate(`/room-chat/${roomId}/answer`);
+          navigate(`/room-chat/${roomId}/answer/${videoId}`);
         }}
       >
         Confirm
@@ -132,8 +132,7 @@ const ViewDetail = () => {
                             .onSnapshot((snapshot) => {
                               snapshot.docs.map((doc) => {
                                 if (doc.data().answerUid == user.uid) {
-                                  localStorage.setItem('video_id', videoId);
-                                  navigate(`/room-chat/${doc.id}/offer`);
+                                  navigate(`/room-chat/${doc.id}/offer/${videoId}`);
                                 }
                               });
                             });

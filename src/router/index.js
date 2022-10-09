@@ -39,7 +39,7 @@ const publicRoutes = [
     layout: Fragment,
   },
   { path: '/', component: Home, layout: DefaultLayout },
-  { path: '/room-chat/:roomId/:type', component: RoomDetail, layout: DefaultLayout },
+  { path: '/room-chat/:roomId/:type/:videoId', component: RoomDetail, layout: DefaultLayout },
   { path: '/room-chat', component: RoomDetail, layout: DefaultLayout },
   { path: '/video-detail/:videoId', component: ViewDetail, layout: DefaultLayout },
 

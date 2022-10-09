@@ -9,13 +9,11 @@ import Record from './Record';
 import axios from 'axios';
 
 export default function RoomDetail() {
-  const { roomId } = useParams();
+  const { roomId, videoId } = useParams();
   const [sendMessage, setSendMessage] = useState(null);
   const currentUserId = localStorage.getItem('user_id');
   const [loading, setLoading] = useState(true);
   const [video, setVideo] = useState();
-
-  const videoId = localStorage.getItem('video_id');
 
   useEffect(() => {
     axios.get(`/video/detail/${videoId}`).then((res) => {
