@@ -21,7 +21,7 @@ export default function () {
               </Link>
             ) : (
               noti.type === 'teacher' &&
-              noti.teacher_id === currentUserId && (
+              noti.teacherId === currentUserId && (
                 <Link to={`/record-detail/${noti.recordId}`} className="text-white text-base">
                   {noti.userFullname}has uploaded a record. Check it now !!!
                 </Link>
