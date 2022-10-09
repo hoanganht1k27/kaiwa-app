@@ -9,18 +9,23 @@ import { addDocument } from '~/firebase/servieces';
 import useFirestore from '~/hooks/useFirestore';
 import { db } from '~/firebase/config';
 const ViewDetail = () => {
-  let { videoId } = useParams();
+  const { videoId } = useParams();
   const navigate = useNavigate();
   const [video, setVideo] = useState();
   const [loading, setLoading] = useState(true);
   const currentUserId = localStorage.getItem('user_id');
   const currentUserFullname = localStorage.getItem('fullname');
-  const [docId, setDocId] = useState(null);
 
-  const openNotification = (fullname, index) => {
+  const openNotification = (fullname, roomId, index) => {
     const key = `open${Date.now()}`;
     const btn = (
-      <Button key={index} size="normal" onClick={() => navigate(`/room-chat/${docId}/answer`)}>
+      <Button
+        key={index}
+        size="normal"
+        onClick={() => {
+          navigate(`/room-chat/${roomId}/answer`);
+        }}
+      >
         Confirm
       </Button>
     );
@@ -37,7 +42,6 @@ const ViewDetail = () => {
     axios.get(`/video/detail/${videoId}`).then((res) => {
       if (res.status === 200) {
         setVideo(res.data);
-        console.log(res)
         setLoading(false);
       }
     });
@@ -52,7 +56,7 @@ const ViewDetail = () => {
         .then((snap) => {
           let added = null;
           snap.forEach((doc) => {
-            if (doc.data().uid == currentUserId) {
+            if (doc.data().videoId == videoId && doc.data().uid == currentUserId) {
               added = true;
             }
           });
@@ -71,6 +75,19 @@ const ViewDetail = () => {
 
   const rooms = useFirestore('rooms');
 
+  // useEffect((e) => {
+  //   const handler = () => {
+  //     e.preventDefault();
+  //     e.returnValue = 'Ngon Chay khá là ổn';
+  //   };
+
+  //   window.addEventListener('beforeunload', (e) => handler(e));
+
+  //   return () => {
+  //     window.addEventListener('beforeunload', (e) => handler(e));
+  //   };
+  // });
+
   return (
     <>
       {loading ? (
@@ -79,9 +96,11 @@ const ViewDetail = () => {
         </div>
       ) : (
         <div className="px-[80px]">
-          {rooms?.map((each,index) => {
-            if (each.answerUid === currentUserId) {
-              openNotification(each.answerUid, index);
+          {rooms?.map((each, index) => {
+            if (each.answerUid === currentUserId && each.videoId == videoId) {
+              if (each.roomId) {
+                openNotification(each.answerUid, each.roomId, index);
+              }
             }
           })}
           <div className="flex flex-row gap-4 max-h-[80vh]">
@@ -105,14 +124,15 @@ const ViewDetail = () => {
                             offerUid: currentUserId,
                             answerUid: user.uid,
                             answerFullname: user.fullname,
+                            videoId: videoId,
                           });
                           db.collection('rooms')
+                            .where('videoId', '==', videoId)
                             .orderBy('createdAt', 'asc')
                             .onSnapshot((snapshot) => {
                               snapshot.docs.map((doc) => {
                                 if (doc.data().answerUid == user.uid) {
-                                  setDocId(doc.id);
-                                  localStorage.setItem('video_id', videoId)
+                                  localStorage.setItem('video_id', videoId);
                                   navigate(`/room-chat/${doc.id}/offer`);
                                 }
                               });

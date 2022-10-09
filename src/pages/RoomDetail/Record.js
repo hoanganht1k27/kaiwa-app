@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { SendOutlined } from '@ant-design/icons';
+import { SendOutlined, LoadingOutlined } from '@ant-design/icons';
 import { db } from '~/firebase/config';
-import { ReactMediaRecorder, useReactMediaRecorder } from 'react-media-recorder';
+import { ReactMediaRecorder } from 'react-media-recorder';
 import uploadFile from '~/hooks/uploadFile';
 import { useNavigate, useParams } from 'react-router-dom';
-import { v4 } from 'uuid';
 import { addDocument } from '~/firebase/servieces';
-import { ref } from 'firebase/storage';
 import axios from 'axios';
-import Level from '../Home/Level';
 
 const servers = {
   iceServers: [
@@ -26,39 +23,48 @@ export default function Record({ video }) {
   const localVideo = useRef();
   const remoteVideo = useRef();
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
-
-  const [callId, setCallId] = useState(null);
-  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleDownload = async (mediaBlobUrl) => {
+    setLoading(true);
     const blob = await fetch(mediaBlobUrl).then((r) => r.blob());
     if (blob) {
       const file = new File([blob], 'asdfasdfasdf', { type: 'audio/wav' });
       if (file) {
         const path = await uploadFile(file);
-        axios
-          .post('/record/add', {
-            url: path,
-            name: video.name,
-            video_id: video.video_id,
-            level: video.level,
-            topic: video.topic,
-            teacher_id: video.created_by_id,
-            student_a_id: userData.offerUid,
-            student_b_id: userData.answerUid,
-          })
-          .then((res) => {
-            console.log(res);
-          });
-
-        // addDocument('notifications', {
-        //   userId: currentUserId,
-        //   recordId: ,
-        //   type: 'user',
-        // });
-        // pc.close();
-        // navigate('/');
+        if (path) {
+          db.collection('rooms')
+            .orderBy('createdAt', 'asc')
+            .onSnapshot((snapshot) => {
+              snapshot.docs.map((doc) => {
+                if (doc.id == roomId) {
+                  axios
+                    .post('/record/add', {
+                      url: path,
+                      name: video.name,
+                      video_id: doc.data().videoId,
+                      level: video.level,
+                      topic: video.topic,
+                      teacher_id: video.created_by_id,
+                      student_a_id: doc.data().offerUid,
+                      student_b_id: doc.data().answerUid,
+                    })
+                    .then((res) => {
+                      console.log(res);
+                      addDocument('notifications', {
+                        teacherId: video.created_by_id,
+                        userFullname: doc.data().offerFullname,
+                        recordId: res.data._id,
+                        type: 'teacher',
+                      });
+                      pc.close();
+                      setLoading(false);
+                      navigate('/');
+                    });
+                }
+              });
+            });
+        }
       }
     }
   };
@@ -118,6 +124,9 @@ export default function Record({ video }) {
             }
           });
         });
+
+        const room = db.collection('rooms').doc(roomId);
+        room.update({ roomId: roomId });
       } else {
         const localStream = await navigator.mediaDevices.getUserMedia({
           video: true,
@@ -176,16 +185,6 @@ export default function Record({ video }) {
             });
           });
       }
-
-      db.collection('rooms')
-        .orderBy('createdAt', 'asc')
-        .onSnapshot((snapshot) => {
-          snapshot.docs.map((doc) => {
-            if (doc.id == roomId) {
-              console.log('fasdfasdf : ', doc.data());
-            }
-          });
-        });
     };
 
     return hanldleStart;
@@ -194,7 +193,6 @@ export default function Record({ video }) {
   return (
     <>
       <div className="mt-5 px-[50px]">
-        {console.log(userData)}
         <div className="flex flex-row">
           <div className="basis-1/2">
             <video
@@ -206,12 +204,7 @@ export default function Record({ video }) {
             />
           </div>
           <div className="basis-1/2">
-            <video
-              className="w-[250px] rounded-md"
-              autoPlay
-              playsInline
-              ref={remoteVideo}
-            />
+            <video className="w-[250px] rounded-md" autoPlay playsInline ref={remoteVideo} />
           </div>
         </div>
       </div>
@@ -221,7 +214,7 @@ export default function Record({ video }) {
             screen
             render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
               <div>
-                {status === 'recording' && (
+                {status === 'idle' && (
                   <button
                     className="bg-[#55C2D9] py-2 px-4 text-lg font-medium text-white rounded-lg"
                     onClick={startRecording}
@@ -229,10 +222,11 @@ export default function Record({ video }) {
                     Start Recording
                   </button>
                 )}
-                {status === 'idle' && (
+                {status === 'recording' && (
                   <div className="flex items-center">
-                    <div className="flex items-center justify-center w-[24px] h-[24px] rounded-[50%] mr-2"
-                      style={{border: "2px solid #d61f2c"}}
+                    <div
+                      className="flex items-center justify-center w-[24px] h-[24px] rounded-[50%] mr-2"
+                      style={{ border: '2px solid #d61f2c' }}
                     >
                       <div className="bg-[#d61f2c] w-[18px] h-[18px] rounded-[50%]"></div>
                     </div>
@@ -247,7 +241,7 @@ export default function Record({ video }) {
                     onClick={() => handleDownload(mediaBlobUrl)}
                   >
                     <span className="pr-2 text-lg font-medium">Send record</span>
-                    <SendOutlined className="text-base" />
+                    {loading ? <LoadingOutlined className="text-base" /> : <SendOutlined className="text-base" />}
                   </button>
                 )}
               </div>

@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SendOutlined } from '@ant-design/icons';
 import { Input, Button, Spin } from 'antd';
@@ -12,19 +12,19 @@ export default function RoomDetail() {
   const { roomId } = useParams();
   const [sendMessage, setSendMessage] = useState(null);
   const currentUserId = localStorage.getItem('user_id');
-  const [loading, setLoading] = useState(true)
-  const [video, setVideo] = useState()
+  const [loading, setLoading] = useState(true);
+  const [video, setVideo] = useState();
 
-  const videoId = localStorage.getItem('video_id')
+  const videoId = localStorage.getItem('video_id');
 
   useEffect(() => {
-    axios.get(`/video/detail/${videoId}`).then(res => {
-      if(res.status === 200){
-        setVideo(res.data.url)
-        setLoading(false)
+    axios.get(`/video/detail/${videoId}`).then((res) => {
+      if (res.status === 200) {
+        setVideo(res.data);
+        setLoading(false);
       }
-    })
-  })
+    });
+  }, [videoId]);
 
   const handleOnSubmit = () => {
     try {
@@ -43,22 +43,19 @@ export default function RoomDetail() {
 
   const messages = useFirestore('messages');
 
-  if(loading){
-    return(
+  if (loading) {
+    return (
       <div className="mt-10 flex justify-center">
         <Spin></Spin>
       </div>
-    )
+    );
   }
   return (
     <div className="px-8">
       <div className="flex flex-row gap-4 max-h-[80vh]">
         <div className="basis-3/4 flex justify-center bg-[#272343]">
           <video className="hover:cursor-pointer" width="650" height="360" controls>
-            <source
-              src={video}
-              type="video/mp4"
-            />
+            <source src={video.url} type="video/mp4" />
           </video>
         </div>
         <div className="basis-1/4 flex flex-col justify-between text-center bg-[#bae8e8]">
@@ -103,7 +100,7 @@ export default function RoomDetail() {
         </div>
       </div>
       <div>
-        <Record video />
+        <Record video={video} />
       </div>
     </div>
   );

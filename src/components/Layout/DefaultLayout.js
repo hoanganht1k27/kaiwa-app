@@ -77,9 +77,6 @@ export default function DefaultLayout({ children }) {
           >
             <i className={`fa-solid fa-bell ${style.icon}`} />
           </Tippy>
-          {/* <Dropdown overlay={<Menu className={style.noti} items={listNoti}></Menu>} trigger={['click']}>
-            <i className={`fa-solid fa-bell ${style.icon}`}></i>
-          </Dropdown> */}
           <img src={defaultAvatar} alt="text" className={`${style.icon}`} />
         </div>
       </div>

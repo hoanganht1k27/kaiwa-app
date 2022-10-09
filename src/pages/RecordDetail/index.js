@@ -61,11 +61,11 @@ const RecordDetail = () => {
   };
 
   const handleSubmit = () => {
-    // axios.post(`/feedback/${teacher_id}/add-feedback`, feedBack).then(res => {
-    //   if (res.status === 200) {
-    //     console.log(res)
-    //   }
-    // })
+    axios.post(`/feedback/${teacher_id}/add-feedback`, feedBack).then((res) => {
+      if (res.status === 200) {
+        console.log(res);
+      }
+    });
     addDocument('notifications', {
       teacher_id: teacher_id,
       student_a_id: feedBack.student_a_id,
@@ -90,10 +90,7 @@ const RecordDetail = () => {
       <div className="w-4/5 m-auto">
         <div className="py-1 flex justify-center bg-black">
           <video className="hover:cursor-pointer" width="750" height="500" controls>
-            <source
-              src="https://res.cloudinary.com/dauzcw4k5/video/upload/v1665154368/kaiwa_n5_zlicza.mp4"
-              type="video/mp4"
-            />
+            <source src={record.url} type="video/mp4" />
           </video>
         </div>
         <div className="grid grid-cols-12 gap-y-3 bg-white py-10 pl-8">
