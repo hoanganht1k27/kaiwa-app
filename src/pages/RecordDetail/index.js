@@ -8,10 +8,15 @@ import axios from 'axios';
 import { addDocument } from '~/firebase/servieces';
 const RecordDetail = () => {
   const navigate = useNavigate();
+<<<<<<< HEAD
+  const [record, setRecord] = useState()
+=======
   const [record, setRecord] = useState();
+>>>>>>> 819dde12c9f204f94a93d22157127b02c6f04bbc
   const [loading, setLoading] = useState(true);
   const teacher_id = localStorage.getItem('user_id');
   const isTeacher = localStorage.getItem('isTeacher');
+  const [check, setCheck] = useState(false);
   let { recordId } = useParams();
 
   const [feedBack, setFeedBack] = useState({
@@ -28,6 +33,39 @@ const RecordDetail = () => {
       if (res.status === 200) {
         setRecord(res.data);
         const new_feedback = feedBack;
+<<<<<<< HEAD
+        new_feedback.video_id = res.data.video_id
+        new_feedback.record_id = res.data._id
+        new_feedback.student_a_id = res.data.student_a_id
+        new_feedback.student_b_id = res.data.student_b_id
+        setFeedBack(new_feedback)
+        // setLoading(false);
+
+      }
+    })
+    axios.get( `/feedback/detail/${recordId}`)
+      .then( res => {
+        // console.log( res.data);
+        if( res.data.message){
+          setMyFeedBack({
+            content: "",
+            bonus: ""
+          });
+        }else{
+          var a = {
+            content: res.data.content,
+            bonus: res.data.bonus
+          }
+          setMyFeedBack( a);
+        }
+      })
+      axios.get(`/record/${recordId}`)
+        .then( res =>{
+          console.log(res.data.checked);
+          setCheck( res.data.checked);
+          setLoading(false);
+        })
+=======
         new_feedback.video_id = res.data.video_id;
         new_feedback.record_id = res.data._id;
         new_feedback.student_a_id = res.data.student_a_id;
@@ -51,6 +89,7 @@ const RecordDetail = () => {
         setMyFeedBack(a);
       }
     });
+>>>>>>> 819dde12c9f204f94a93d22157127b02c6f04bbc
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordId]);
@@ -60,6 +99,36 @@ const RecordDetail = () => {
     setFeedBack({ ...feedBack, ...allValues });
   };
 
+<<<<<<< HEAD
+  const handleSubmit = (e) => {
+    // e.preventDefault();
+    axios.post(`/feedback/${teacher_id}/add-feedback`, feedBack).then(res => {
+      if (res.status === 200) {
+        // console.log(res)
+        
+      }
+    })
+    // var {router} = useParams();
+    // console.log( router);
+    // axios.get( `/feedback/detail/${recordId}`)
+    //   .then( res => {
+    //     console.log( res.data);
+    //     if( res.data.message){
+    //       setMyFeedBack({
+    //         content: "",
+    //         bonus: ""
+    //       });
+    //     }else{
+    //       var a = {
+    //         content: res.data.content,
+    //         bonus: res.data.bonus
+    //       }
+    //       setMyFeedBack( a);
+    //     }
+    //     setCheck( true);
+    //   })
+    navigate('/');
+=======
   const handleSubmit = () => {
     // axios.post(`/feedback/${teacher_id}/add-feedback`, feedBack).then(res => {
     //   if (res.status === 200) {
@@ -75,6 +144,7 @@ const RecordDetail = () => {
       recordId: recordId,
       type: 'student',
     });
+>>>>>>> 819dde12c9f204f94a93d22157127b02c6f04bbc
   };
 
   if (loading) {
@@ -86,7 +156,7 @@ const RecordDetail = () => {
   }
 
   return (
-    <div className="px-10 pt-[60px] bg-[#e3f6f5]">
+    <div className="px-10 pt-[60px] mt-[60px] bg-[#e3f6f5]">
       <div className="w-4/5 m-auto">
         <div className="py-1 flex justify-center bg-black">
           <video className="hover:cursor-pointer" width="750" height="500" controls>
@@ -97,10 +167,38 @@ const RecordDetail = () => {
           </video>
         </div>
         <div className="grid grid-cols-12 gap-y-3 bg-white py-10 pl-8">
+<<<<<<< HEAD
+          {
+            (isTeacher === "true" && !check) ? (
+              <div className="col-span-7 grid grid-cols-12 mt-5">
+                <div className="col-span-12 text-xl font-semibold w-full">
+                  <label htmlFor="content">Comment</label>
+                </div>
+                <div className="col-span-12">
+                  <Form name="basic" onValuesChange={handleValueChange}>
+                    <Form.Item name="content">
+                      <TextArea id="content" rows={4} />
+                    </Form.Item>
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-x-4">
+                        <span className="text-xl font-semibold">Bonus Point</span>
+                        <Form.Item name="bonus" className="mb-0">
+                          <InputNumber min={0} />
+                        </Form.Item>
+                      </div>
+                      <Button className="w-2/5 h-[40px] bg-[#ffd803] text-[#272343] hover:bg-[#ffd803] 
+                    hover:opacity-80 hover:text-[#272343]" onClick={handleSubmit}>
+                        Send Feedback
+                      </Button>
+                    </div>
+                  </Form>
+                </div>
+=======
           {isTeacher === 'true' ? (
             <div className="col-span-7 grid grid-cols-12 mt-5">
               <div className="col-span-12 text-xl font-semibold w-full">
                 <label htmlFor="content">Comment</label>
+>>>>>>> 819dde12c9f204f94a93d22157127b02c6f04bbc
               </div>
               <div className="col-span-12">
                 <Form name="basic" onValuesChange={handleValueChange}>

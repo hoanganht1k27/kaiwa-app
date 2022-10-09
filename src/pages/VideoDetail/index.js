@@ -45,6 +45,18 @@ const ViewDetail = () => {
 
   const watchingPeople = useFirestore('watching');
 
+<<<<<<< HEAD
+  return(
+    <div className="px-[80px] mt-[60px]">
+      <div className="flex flex-row gap-4 max-h-[80vh]">
+        <div className="basis-3/4 bg-[#272343] h-full">
+          <video className="hover:cursor-pointer" width="100%" height="500" controls>
+            <source
+              src={video.url}
+              type="video/mp4"
+            />
+          </video>
+=======
   useEffect(() => {
     const checkWatching = () => {
       db.collection('watching')
@@ -76,6 +88,7 @@ const ViewDetail = () => {
       {loading ? (
         <div className="flex justify-center mt-[50px]">
           <Spin size="large"></Spin>
+>>>>>>> 819dde12c9f204f94a93d22157127b02c6f04bbc
         </div>
       ) : (
         <div className="px-[80px]">

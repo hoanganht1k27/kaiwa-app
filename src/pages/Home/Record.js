@@ -1,5 +1,6 @@
 import {memo} from 'react';
 import { useNavigate } from 'react-router-dom';
+import {CheckOutlined, CommentOutlined} from '@ant-design/icons';
 
 import style from '~/assets/css/record.module.css';
 function Record({records}){
@@ -22,8 +23,8 @@ function Record({records}){
                         <p className={`${style.topic} ${style.topic2}`}>{record.level}</p>
                     </div>
                     <div className={style.description1}>
-                        <p className={style.topic}><i className={`fa-solid fa-user ${style.iconWatching}`}> </i>{record.teacher_name}</p>
-                        <p className={`${style.topic} ${style.topic2}`}>{record.level}</p>
+                        <p style={{lineHeight: "32px"}} className={style.topic}><i className={`fa-solid fa-user ${style.iconWatching}`}> </i>{record.teacher_name}</p>
+                        <p className={`${style.topic} ${style.topic2}`}>{record.checked ? <CheckOutlined style={{ lineHeight: '26px', paddingBottom:"4px",fontWeight:"600" }}/> : <CommentOutlined style={{ lineHeight: '26px',paddingBottom:"4px",fontWeight:"600" }} />}</p>
                     </div>
                 </div>
             })
