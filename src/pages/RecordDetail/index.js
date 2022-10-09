@@ -8,9 +8,10 @@ import axios from 'axios';
 const RecordDetail = () => {
   const navigate = useNavigate();
   const [record, setRecord] = useState()
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const teacher_id = localStorage.getItem('user_id');
   const isTeacher = localStorage.getItem('isTeacher');
+  const [check, setCheck] = useState(false);
   let { recordId } = useParams();
 
   const [feedBack, setFeedBack] = useState({
@@ -32,7 +33,8 @@ const RecordDetail = () => {
         new_feedback.student_a_id = res.data.student_a_id
         new_feedback.student_b_id = res.data.student_b_id
         setFeedBack(new_feedback)
-        setLoading(false)
+        // setLoading(false);
+
       }
     })
     axios.get( `/feedback/detail/${recordId}`)
@@ -51,8 +53,12 @@ const RecordDetail = () => {
           setMyFeedBack( a);
         }
       })
-
-
+      axios.get(`/record/${recordId}`)
+        .then( res =>{
+          console.log(res.data.checked);
+          setCheck( res.data.checked);
+          setLoading(false);
+        })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordId])
@@ -63,12 +69,34 @@ const RecordDetail = () => {
     setFeedBack({ ...feedBack, ...allValues });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    // e.preventDefault();
     axios.post(`/feedback/${teacher_id}/add-feedback`, feedBack).then(res => {
       if (res.status === 200) {
-        console.log(res)
+        // console.log(res)
+        
       }
     })
+    // var {router} = useParams();
+    // console.log( router);
+    // axios.get( `/feedback/detail/${recordId}`)
+    //   .then( res => {
+    //     console.log( res.data);
+    //     if( res.data.message){
+    //       setMyFeedBack({
+    //         content: "",
+    //         bonus: ""
+    //       });
+    //     }else{
+    //       var a = {
+    //         content: res.data.content,
+    //         bonus: res.data.bonus
+    //       }
+    //       setMyFeedBack( a);
+    //     }
+    //     setCheck( true);
+    //   })
+    navigate('/');
   };
 
   if (loading) {
@@ -80,7 +108,7 @@ const RecordDetail = () => {
   }
 
   return (
-    <div className="px-10 pt-[60px] bg-[#e3f6f5]">
+    <div className="px-10 pt-[60px] mt-[60px] bg-[#e3f6f5]">
       <div className="w-4/5 m-auto">
         <div className="py-1 flex justify-center bg-black">
           <video className="hover:cursor-pointer" width="750" height="500" controls>
@@ -92,7 +120,7 @@ const RecordDetail = () => {
         </div>
         <div className="grid grid-cols-12 gap-y-3 bg-white py-10 pl-8">
           {
-            isTeacher === "true" ? (
+            (isTeacher === "true" && !check) ? (
               <div className="col-span-7 grid grid-cols-12 mt-5">
                 <div className="col-span-12 text-xl font-semibold w-full">
                   <label htmlFor="content">Comment</label>

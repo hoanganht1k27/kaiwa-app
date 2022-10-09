@@ -27,7 +27,7 @@ const ViewDetail = () => {
   }
 
   return(
-    <div className="px-[80px]">
+    <div className="px-[80px] mt-[60px]">
       <div className="flex flex-row gap-4 max-h-[80vh]">
         <div className="basis-3/4 bg-[#272343] h-full">
           <video className="hover:cursor-pointer" width="100%" height="500" controls>

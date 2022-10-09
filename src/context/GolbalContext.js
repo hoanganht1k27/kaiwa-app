@@ -1,11 +1,13 @@
 import React from 'react';
-import { createContext } from 'react';
+import { createContext, useRef } from 'react';
 // import axiosClient from '~/axiosClient';
 import axios from 'axios';
 
 const GlobalContext = createContext({});
 
 export const GlobalProvider = ({ children }) => {
+  const video = useRef();
+  const record = useRef();
   const getData = ( params)=>{
     const token = localStorage.getItem('token');
     const user_id = localStorage.getItem('user_id');
@@ -17,7 +19,9 @@ export const GlobalProvider = ({ children }) => {
     return axios.get(params, {token:token, user_id: user_id, email:email, type: "video"});
   }
   return <GlobalContext.Provider value={{
-    getData
+    getData,
+    video: video,
+    record: record
   }}>{children}</GlobalContext.Provider>;
 };
 

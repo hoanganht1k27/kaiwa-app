@@ -1,5 +1,7 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {UnlockOutlined} from '@ant-design/icons';
+
 import style from '~/assets/css/video.module.css';
 
 function Video({ videos }) {
@@ -20,8 +22,8 @@ function Video({ videos }) {
                         <p className={`${style.topic} ${style.topic2}`}>{video.level}</p>
                     </div>
                     <div className={style.description1}>
-                        <p className={style.topic}><i className={`fa-solid fa-user ${style.iconWatching}`}> </i>{video.views} watching</p>
-                        <p className={`${style.topic} ${style.topic2}`}>{video.level}</p>
+                        <p style={{lineHeight: "32px"}} className={style.topic}><i className={`fa-solid fa-user ${style.iconWatching}`}> </i>{video.views} watching</p>
+                        <p className={`${style.topic} ${style.topic2}`}><UnlockOutlined style={{ lineHeight: '26px', paddingBottom:"4px" }}/></p>
                     </div>
                 </div>
             })
