@@ -28,7 +28,7 @@ function App() {
                 element={
                   <Provider>
                     <Layout>
-                      <Page/>
+                      <Page />
                     </Layout>
                   </Provider>
                 }

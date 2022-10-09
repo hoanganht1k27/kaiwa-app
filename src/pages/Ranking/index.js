@@ -19,7 +19,7 @@ const Ranking = () => {
   }
 
   return(
-    <div className="mt-[60px] flex items-center justify-center w-screen bg-gradient-to-r from-[#3EADCF] to-[#ABE9CD]" 
+    <div className="flex items-center justify-center w-screen bg-gradient-to-r from-[#3EADCF] to-[#ABE9CD]" 
     style={{ height: "calc(100vh - 60px)"}} >
       <div className="w-3/5 h-[90%] px-[50px] bg-[#f4f8fb] rounded-md pt-5">
         <div className="grid grid-cols-12 gap-x-5 ">
